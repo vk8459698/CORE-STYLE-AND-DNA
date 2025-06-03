@@ -6,11 +6,49 @@ import os
 from collections import defaultdict
 import re
 
+# Allowed genre tags - your specific list
+GENRE_TAGS = {
+    # Main genres
+    "Pop music", "Rock music", "Jazz", "Classical music", "Electronic music",
+    "Blues", "Country", "Folk music", "Reggae", "Funk", "Soul music",
+    "Rhythm and blues", "Gospel music", "Opera", "Hip hop music",
+    
+    # Electronic subgenres
+    "House music", "Techno", "Dubstep", "Drum and bass", "Electronica",
+    "Electronic dance music", "Ambient music", "Trance music",
+    
+    # Rock subgenres
+    "Heavy metal", "Punk rock", "Grunge", "Progressive rock", "Rock and roll",
+    "Psychedelic rock",
+    
+    # World music
+    "Music of Latin America", "Salsa music", "Flamenco", "Music of Africa",
+    "Afrobeat", "Music of Asia", "Carnatic music", "Music of Bollywood",
+    "Middle Eastern music", "Traditional music",
+    
+    # Other genres
+    "Swing music", "Bluegrass", "Ska", "Disco", "New-age music",
+    "Independent music", "Christian music", "Soundtrack music",
+    "Theme music", "Video game music", "Dance music", "Wedding music",
+    "Christmas music", "Music for children",
+    
+    # Mood/style tags
+    "Happy music", "Funny music", "Sad music", "Tender music",
+    "Exciting music", "Angry music", "Scary music",
+    
+    # Vocal styles
+    "A capella", "Vocal music", "Choir", "Chant", "Mantra", "Lullaby",
+    "Beatboxing", "Rapping", "Yodeling"
+}
+
+# Allowed classification types
+CLASSIFICATION_TYPES = ["vocal", "instrumental", "song"]
+
 @dataclass
 class Song:
     """Individual song data structure - simplified"""
-    tags: List[str]  # Genre/style tags
-    classification: str  # Song classification/type
+    tags: List[str]  # Genre/style tags (must be from GENRE_TAGS)
+    classification: str  # Must be: vocal/instrumental/song
     
 @dataclass
 class CoreStyle:
@@ -52,10 +90,36 @@ class OpenAIMusicCategorizer:
         self.core_styles = []
         self.artist_dna = None
         
+    def validate_song_input(self, tags: List[str], classification: str) -> bool:
+        """Validate that tags and classification are from allowed lists"""
+        # Check classification
+        if classification.lower() not in [c.lower() for c in CLASSIFICATION_TYPES]:
+            print(f"Warning: Classification '{classification}' not in allowed types: {CLASSIFICATION_TYPES}")
+            return False
+            
+        # Check tags
+        invalid_tags = []
+        for tag in tags:
+            if tag not in GENRE_TAGS:
+                invalid_tags.append(tag)
+                
+        if invalid_tags:
+            print(f"Warning: Invalid tags found: {invalid_tags}")
+            print("Allowed tags are from GENRE_TAGS list")
+            return False
+            
+        return True
+        
     def add_song(self, tags: List[str], classification: str):
-        """Add a song to the collection with simplified input"""
-        song = Song(tags, classification)
+        """Add a song to the collection with validation"""
+        # Validate input
+        if not self.validate_song_input(tags, classification):
+            print(f"Skipping song with invalid input")
+            return False
+            
+        song = Song(tags, classification.lower())
         self.songs.append(song)
+        return True
         
     def extract_json_from_response(self, response_text: str) -> Dict:
         """Extract JSON from response text, handling cases where it might not be pure JSON"""
@@ -125,6 +189,7 @@ IMPORTANT GUIDELINES:
 - Focus on major stylistic differences, not minor variations
 - Group songs that share similar musical DNA, production style, or thematic elements
 - Each core style should have at least 1-2 songs minimum
+- Remember that classification can only be: vocal, instrumental, or song
 
 You must return a JSON response with this exact structure:
 {
@@ -149,6 +214,7 @@ Remember:
 - Maximum 10 core styles, minimum 1
 - Focus on major musical differences
 - Each style needs clear musical identity
+- Classifications are: vocal, instrumental, song
 - Return only valid JSON, no additional text"""
 
         messages = [
@@ -211,6 +277,7 @@ Generate:
 3. 5 core style tags (genre/feel descriptors)
 4. 5 signature sound tags (sonic characteristics)
 
+Note: Classifications are limited to: vocal, instrumental, song
 Return only valid JSON, no additional text."""
 
         messages = [
@@ -302,7 +369,7 @@ Return only valid JSON, no additional text."""
             song_ids = style_info.get('song_ids', [])
             characteristics = style_info.get('primary_characteristics', [])
             
-            print(f"   Processing: {style_name}")
+            print(f"    Processing: {style_name}")
             
             style_details = self.generate_core_style_details(
                 style_name, song_ids, characteristics, artist_name
@@ -350,11 +417,11 @@ Return only valid JSON, no additional text."""
         
         for i, style in enumerate(results['core_styles'], 1):
             print(f"\n[{i}] {style['style_name'].upper()}")
-            print(f"     {results['artist_name']}")
-            print(f"     {style['description']}")
-            print(f"      Core Tags: {', '.join(style['core_style_tags'])}")
-            print(f"     Signature Sound: {', '.join(style['signature_sound_tags'])}")
-            print(f"     Songs: {style['song_count']} tracks")
+            print(f"      {results['artist_name']}")
+            print(f"      {style['description']}")
+            print(f"       Core Tags: {', '.join(style['core_style_tags'])}")
+            print(f"      Signature Sound: {', '.join(style['signature_sound_tags'])}")
+            print(f"      Songs: {style['song_count']} tracks")
             print("-" * 60)
         
         print(f"\n ARTIST DNA TAGS:")
@@ -369,99 +436,154 @@ Return only valid JSON, no additional text."""
             with open(filename, 'w', encoding='utf-8') as f:
                 json.dump(results, f, indent=2, ensure_ascii=False)
             print(f" Results saved to {filename}")
+            
+            # Also display file download link in Colab
+            try:
+                from google.colab import files
+                print(f" Downloading {filename} for you...")
+                files.download(filename)
+            except ImportError:
+                print(" File saved locally (not in Colab environment)")
+                
         except Exception as e:
             print(f" Error saving results: {e}")
 
-# Example usage and main execution
-def example_usage():
-    """Example of how to use the OpenAI Music Categorizer with simplified input"""
+def print_allowed_genres():
+    """Print all allowed genre tags for reference"""
+    print(" ALLOWED GENRE TAGS:")
+    print("=" * 50)
+    genres_list = sorted(list(GENRE_TAGS))
+    for i, genre in enumerate(genres_list, 1):
+        print(f"{i:2d}. {genre}")
+    print("=" * 50)
+    print(f"Total: {len(genres_list)} allowed genres")
+
+def run_music_dna_analysis(artist_name: str, songs_data: List[Dict], api_key: str = None):
+    """
+    Main function to run music DNA analysis
     
-    # Initialize with your OpenAI API key
+    Args:
+        artist_name: Name of the artist
+        songs_data: List of dicts with 'tags' and 'classification' keys
+        api_key: OpenAI API key (optional if set as environment variable)
+    
+    Returns:
+        Dict with analysis results
+    """
+    
     try:
-        categorizer = OpenAIMusicCategorizer(model="gpt-4o")
-    except ValueError as e:
-        print(f" {e}")
-        print(" Set your OpenAI API key as environment variable OPENAI_API_KEY")
-        print(" Or pass it directly: OpenAIMusicCategorizer(api_key='your-key')")
-        return None, None
+        # Initialize categorizer
+        categorizer = OpenAIMusicCategorizer(api_key=api_key, model="gpt-4o")
+        
+        # Add songs
+        print(f" Adding {len(songs_data)} songs...")
+        successful_adds = 0
+        
+        for i, song_data in enumerate(songs_data):
+            if 'tags' not in song_data or 'classification' not in song_data:
+                print(f"  Skipping song {i+1}: Missing 'tags' or 'classification'")
+                continue
+                
+            success = categorizer.add_song(
+                tags=song_data["tags"],
+                classification=song_data["classification"]
+            )
+            
+            if success:
+                successful_adds += 1
+                
+        print(f" Successfully added {successful_adds} songs")
+        
+        if successful_adds == 0:
+            print(" No valid songs to analyze!")
+            return None
+            
+        # Run analysis
+        results = categorizer.analyze_artist(artist_name=artist_name)
+        
+        # Print and save results
+        if results and "error" not in results:
+            categorizer.print_analysis_results(results)
+            categorizer.save_results_to_json(results, f"{artist_name.replace(' ', '_')}_dna_analysis.json")
+            return results
+        else:
+            print(" Analysis failed!")
+            return results
+            
+    except Exception as e:
+        print(f" Error in analysis: {e}")
+        return None
+
+# EXAMPLE USAGE FOR COLAB
+def example_analysis():
+    """Example analysis you can run in Colab"""
     
-    # Add sample songs with simplified input (just tags and classification)
+    # Sample artist data with corrected tags and classifications
+    artist_name = "SAMPLE ARTIST"
+    
     sample_songs = [
         {
-            "tags": ["EDM", "electronic", "dance", "festival", "high-energy", "synth"],
-            "classification": "Electronic Dance Music"
+            "tags": ["Electronic music", "House music", "Dance music", "Electronic dance music"],
+            "classification": "instrumental"
         },
         {
-            "tags": ["progressive house", "electronic", "melodic", "atmospheric", "emotional"],
-            "classification": "Progressive House"
+            "tags": ["Pop music", "Electronic music", "Happy music", "Dance music"],
+            "classification": "vocal"
         },
         {
-            "tags": ["folktronica", "acoustic", "electronic", "chill", "organic", "indie"],
-            "classification": "Electronic Folk"
+            "tags": ["Jazz", "Soul music", "Vocal music"],
+            "classification": "vocal"
         },
         {
-            "tags": ["electro-pop", "synth-pop", "upbeat", "bright", "catchy", "commercial"],
-            "classification": "Pop Electronic"
+            "tags": ["Rock music", "Heavy metal", "Exciting music"],
+            "classification": "song"
         },
         {
-            "tags": ["ambient", "electronic", "instrumental", "textured", "atmospheric"],
-            "classification": "Ambient Electronic"
+            "tags": ["Ambient music", "Electronic music", "Tender music"],
+            "classification": "instrumental"
         },
         {
-            "tags": ["big room", "house", "festival", "energetic", "anthem", "mainstream"],
-            "classification": "Big Room House"
+            "tags": ["Hip hop music", "Rapping", "Electronic music"],
+            "classification": "vocal"
         },
         {
-            "tags": ["techno", "minimal", "driving", "industrial", "underground"],
-            "classification": "Minimal Techno"
+            "tags": ["Classical music", "Opera", "Vocal music"],
+            "classification": "vocal"
         },
         {
-            "tags": ["trap", "hip-hop", "bass", "electronic", "urban", "beats"],
-            "classification": "Electronic Trap"
+            "tags": ["Reggae", "Happy music", "Vocal music"],
+            "classification": "song"
         }
     ]
     
-    # Add songs to categorizer
-    for song_data in sample_songs:
-        categorizer.add_song(
-            tags=song_data["tags"],
-            classification=song_data["classification"]
-        )
-    
-    # Analyze with OpenAI
-    results = categorizer.analyze_artist(artist_name="ASH POURNOURI")
-    
-    # Print formatted results
-    categorizer.print_analysis_results(results)
-    
-    # Save results to JSON file
-    if results and "error" not in results:
-        categorizer.save_results_to_json(results)
-    
-    return categorizer, results
-
-def main():
-    """Main function to run the music analysis"""
-    print(" Music Style Classifier with OpenAI (Simplified Input)")
+    print(" RUNNING EXAMPLE MUSIC DNA ANALYSIS")
     print("=" * 60)
     
-    # Check if API key is available
+    # Run analysis
+    results = run_music_dna_analysis(artist_name, sample_songs)
+    
+    return results
+
+# FOR COLAB: Uncomment these lines to run
+if __name__ == "__main__":
+    print(" Music DNA Analyzer - Ready for Colab!")
+    print("=" * 60)
+    
+    # Show allowed genres
+    print_allowed_genres()
+    
+    print("\n" + "=" * 60)
+    print(" ALLOWED CLASSIFICATIONS: vocal, instrumental, song")
+    print("=" * 60)
+    
+    # Check for API key
     api_key = os.getenv('OPENAI_API_KEY')
     if not api_key:
-        print(" OpenAI API key not found!")
+        print("\n  OpenAI API key not found!")
         print(" Please set your API key:")
-        print("   export OPENAI_API_KEY='your-api-key-here'")
-        print("   OR modify the code to pass it directly")
-        return
-    
-    # Run example analysis
-    categorizer, results = example_usage()
-    
-    if categorizer and results and "error" not in results:
-        print(f"\n Analysis completed successfully!")
-        print(f" Check 'music_analysis_results.json' for detailed results")
+        print("   import os")
+        print("   os.environ['OPENAI_API_KEY'] = 'your-api-key-here'")
+        print("\n Then run: example_analysis()")
     else:
-        print(" Analysis failed. Please check your API key and try again.")
-
-if __name__ == "__main__":
-    main()
+        print(f"\n API key found! Running example analysis...")
+        example_analysis()
