@@ -1,0 +1,150 @@
+{
+  "artist_name": "ASH POURNOURI",
+  "total_songs_analyzed": 8,
+  "total_core_styles": 6,
+  "core_styles": [
+    {
+      "style_name": "High-Energy Festival Electronic",
+      "description": "ASH POURNOURI's High-Energy Festival Electronic vision merges festival anthems with electrifying beats. The productions focus on creating an immersive, energetic atmosphere that captivates large audiences. By blending EDM and Big Room House elements, ASH POURNOURI elevates the electronic music scene, crafting unforgettable experiences for festival-goers worldwide.",
+      "core_style_tags": [
+        "festival",
+        "energetic",
+        "anthem",
+        "electronic",
+        "dance"
+      ],
+      "signature_sound_tags": [
+        "EDM",
+        "synth",
+        "big room",
+        "high-energy",
+        "mainstream"
+      ],
+      "song_ids": [
+        0,
+        5
+      ],
+      "song_count": 2
+    },
+    {
+      "style_name": "Melodic and Atmospheric Electronic",
+      "description": "ASH POURNOURI's Melodic and Atmospheric Electronic vision merges progressive house and ambient textures. The productions focus on creating immersive soundscapes that evoke deep emotional responses. By blending intricate melodies with lush atmospheres, ASH POURNOURI crafts a sonic journey that resonates with listeners and elevates the electronic music experience.",
+      "core_style_tags": [
+        "melodic",
+        "atmospheric",
+        "emotional",
+        "progressive house",
+        "ambient"
+      ],
+      "signature_sound_tags": [
+        "textured",
+        "instrumental",
+        "lush",
+        "immersive",
+        "evocative"
+      ],
+      "song_ids": [
+        1,
+        4
+      ],
+      "song_count": 2
+    },
+    {
+      "style_name": "Indie Chill Electronica",
+      "description": "ASH POURNOURI's Indie Chill Electronica vision merges acoustic warmth with electronic textures. The productions focus on creating a serene, organic soundscape that invites introspection. By blending folktronica elements with chill vibes, ASH POURNOURI crafts a soothing auditory experience that resonates with indie sensibilities.",
+      "core_style_tags": [
+        "indie",
+        "chill",
+        "electronic",
+        "acoustic",
+        "organic"
+      ],
+      "signature_sound_tags": [
+        "folktronica",
+        "serene",
+        "introspective",
+        "warmth",
+        "textured"
+      ],
+      "song_ids": [
+        2
+      ],
+      "song_count": 1
+    },
+    {
+      "style_name": "Commercial Electro-Pop",
+      "description": "ASH POURNOURI's Commercial Electro-Pop vision merges upbeat and bright elements with catchy hooks. The productions focus on creating an infectious energy that captivates listeners. By blending synth-driven melodies with polished production, ASH POURNOURI elevates the genre, crafting tracks that resonate on both dance floors and radio waves.",
+      "core_style_tags": [
+        "electro-pop",
+        "synth-pop",
+        "upbeat",
+        "bright",
+        "catchy"
+      ],
+      "signature_sound_tags": [
+        "synth-driven",
+        "infectious energy",
+        "polished production",
+        "dance floor",
+        "radio-friendly"
+      ],
+      "song_ids": [
+        3
+      ],
+      "song_count": 1
+    },
+    {
+      "style_name": "Minimal Industrial Techno",
+      "description": "ASH POURNOURI's Minimal Industrial Techno vision merges minimal, driving, and industrial elements. The productions focus on creating a hypnotic and raw atmosphere through repetitive beats and mechanical sounds. By blending stripped-down structures with gritty textures, ASH POURNOURI crafts an immersive experience that resonates deeply within the underground techno scene.",
+      "core_style_tags": [
+        "minimal",
+        "industrial",
+        "techno",
+        "driving",
+        "underground"
+      ],
+      "signature_sound_tags": [
+        "repetitive beats",
+        "mechanical sounds",
+        "gritty textures",
+        "stripped-down structures",
+        "hypnotic atmosphere"
+      ],
+      "song_ids": [
+        6
+      ],
+      "song_count": 1
+    },
+    {
+      "style_name": "Urban Bass Fusion",
+      "description": "ASH POURNOURI's Urban Bass Fusion vision merges trap, hip-hop, and electronic elements. The productions focus on deep basslines and urban beats. By blending gritty textures with pulsating rhythms, ASH POURNOURI crafts a soundscape that resonates with the energy of city life, pushing the boundaries of electronic trap music.",
+      "core_style_tags": [
+        "trap",
+        "hip-hop",
+        "bass",
+        "electronic",
+        "urban"
+      ],
+      "signature_sound_tags": [
+        "deep basslines",
+        "urban beats",
+        "gritty textures",
+        "pulsating rhythms",
+        "city energy"
+      ],
+      "song_ids": [
+        7
+      ],
+      "song_count": 1
+    }
+  ],
+  "artist_dna": {
+    "dna_tags": [
+      "electronic fusion",
+      "textured soundscapes",
+      "high-energy anthems",
+      "melodic atmospheres",
+      "urban rhythmic drive"
+    ]
+  }
+}
