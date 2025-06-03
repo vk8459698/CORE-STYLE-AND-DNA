@@ -461,7 +461,7 @@ def main():
         print(f"\n Analysis completed successfully!")
         print(f" Check 'music_analysis_results.json' for detailed results")
     else:
-        print("❌ Analysis failed. Please check your API key and try again.")
+        print(" Analysis failed. Please check your API key and try again.")
 
 if __name__ == "__main__":
     main()
